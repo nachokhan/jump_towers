@@ -20,6 +20,7 @@ app.add_middleware(
 SYNC_PROCESSOR_URL = os.getenv("SYNC_PROCESSOR_URL")
 ASYNC_PROCESSOR_URL = os.getenv("ASYNC_PROCESSOR_URL")
 
+
 @app.post("/upload")
 async def upload_file(file: UploadFile = File(...)):
     if not file.filename.endswith('.csv'):
@@ -29,14 +30,13 @@ async def upload_file(file: UploadFile = File(...)):
         form = aiohttp.FormData()
         form.add_field('file', await file.read(), filename=file.filename, content_type=file.content_type)
 
-        # Envía el archivo para procesamiento síncrono y asíncrono
         async with session.post(f"{SYNC_PROCESSOR_URL}/process", data=form) as sync_response:
+            if sync_response.status != 200:
+                raise HTTPException(status_code=sync_response.status, detail="Error from sync processor")
             sync_data = await sync_response.json()
 
-        async with session.post(f"{ASYNC_PROCESSOR_URL}/process", data=form) as async_response:
-            async_data = await async_response.json()
+    return {"sync_result": sync_data}
 
-    return {"sync_result": sync_data, "async_result": async_data}
 
 @app.get("/health")
 async def health_check():
