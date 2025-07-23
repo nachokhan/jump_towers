@@ -20,9 +20,8 @@ services:
     volumes:
       - ./api-gateway:/app
       - ./.volumes/api-gateway:/app/data
-    environment:
-      - SYNC_PROCESSOR_URL=http://sync-processor:8001
-      - ASYNC_PROCESSOR_URL=http://async-processor:8002
+    env_file:
+      - ./api-gateway/.env
     depends_on:
       - sync-processor
       - async-processor
@@ -36,6 +35,8 @@ services:
     volumes:
       - ./sync-processor:/app
       - ./.volumes/sync-processor:/app/data
+    env_file:
+      - ./sync-processor/.env
     networks:
       - app-network
 
@@ -46,6 +47,8 @@ services:
     volumes:
       - ./async-processor:/app
       - ./.volumes/async-processor:/app/data
+    env_file:
+      - ./async-processor/.env
     networks:
       - app-network
 
