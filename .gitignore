@@ -3,3 +3,4 @@ structure.json
 .volumes
 *.pyc
 .env
+__pycache__
