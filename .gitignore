@@ -2,3 +2,4 @@ structure.json
 .venv
 .volumes
 *.pyc
+.env
