@@ -11,3 +11,7 @@ async def process_file(file: UploadFile = File(...)):
     content = await file.read()
 
     return {"message": "Async processing started", "filename": file.filename}
+
+@app.get("/health")
+async def health_check():
+    return {"status": "ok"}

@@ -37,3 +37,7 @@ async def upload_file(file: UploadFile = File(...)):
             async_data = await async_response.json()
 
     return {"sync_result": sync_data, "async_result": async_data}
+
+@app.get("/health")
+async def health_check():
+    return {"status": "ok"}
