@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - ./.volumes/frontend:/app/data
+    depends_on:
+      - api-gateway
+    networks:
+      - app-network
+
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./api-gateway:/app
+      - ./.volumes/api-gateway:/app/data
+    environment:
+      - SYNC_PROCESSOR_URL=http://sync-processor:8001
+      - ASYNC_PROCESSOR_URL=http://async-processor:8002
+    depends_on:
+      - sync-processor
+      - async-processor
+    networks:
+      - app-network
+
+  sync-processor:
+    build: ./sync-processor
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./sync-processor:/app
+      - ./.volumes/sync-processor:/app/data
+    networks:
+      - app-network
+
+  async-processor:
+    build: ./async-processor
+    ports:
+      - "8002:8002"
+    volumes:
+      - ./async-processor:/app
+      - ./.volumes/async-processor:/app/data
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

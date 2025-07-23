@@ -1,0 +1,39 @@
+from fastapi import FastAPI, File, UploadFile, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+import os
+import aiohttp
+
+app = FastAPI()
+
+origins = [
+    "http://localhost:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+SYNC_PROCESSOR_URL = os.getenv("SYNC_PROCESSOR_URL")
+ASYNC_PROCESSOR_URL = os.getenv("ASYNC_PROCESSOR_URL")
+
+@app.post("/upload")
+async def upload_file(file: UploadFile = File(...)):
+    if not file.filename.endswith('.csv'):
+        raise HTTPException(status_code=400, detail="Invalid file type. Only CSV files are allowed.")
+
+    async with aiohttp.ClientSession() as session:
+        form = aiohttp.FormData()
+        form.add_field('file', await file.read(), filename=file.filename, content_type=file.content_type)
+
+        # Envía el archivo para procesamiento síncrono y asíncrono
+        async with session.post(f"{SYNC_PROCESSOR_URL}/process", data=form) as sync_response:
+            sync_data = await sync_response.json()
+
+        async with session.post(f"{ASYNC_PROCESSOR_URL}/process", data=form) as async_response:
+            async_data = await async_response.json()
+
+    return {"sync_result": sync_data, "async_result": async_data}
