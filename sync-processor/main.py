@@ -92,10 +92,12 @@ def analyze_movements(df: pd.DataFrame) -> list:
     window_size = timedelta(minutes=10)
     jump_threshold = timedelta(minutes=5)
     result = []
+    i = 0
 
     logging.info(f"Starting analysis of movements... Window size: {window_size}, Jump threshold: {jump_threshold}")
 
-    for i, row in df.iterrows():
+    for idx, row in df.iterrows():
+        i += 1
         t = row["timestamp"]
         window_start = t - window_size
         window_end = t + window_size
@@ -116,14 +118,8 @@ def analyze_movements(df: pd.DataFrame) -> list:
         # Detectar Tower Jump
         prev = df[df["timestamp"] < t].tail(1)
         next_ = df[df["timestamp"] > t].head(1)
-
-        jump = False
-        if not prev.empty and not next_.empty:
-            prev_state, prev_time = prev.iloc[0]["State"], prev.iloc[0]["timestamp"]
-            next_state, next_time = next_.iloc[0]["State"], next_.iloc[0]["timestamp"]
-
-            if prev_state != next_state and (next_time - prev_time) <= jump_threshold:
-                jump = True
+        if i % 500 == 0:
+            logging.info(f"Procesadas {i+1}/{len(df)} filas...({idx})")
 
         result.append({
             "start_time": window_start.isoformat(),
@@ -133,8 +129,5 @@ def analyze_movements(df: pd.DataFrame) -> list:
             "confidence": confidence
         })
 
-        if i % 100 == 0:
-            logging.info(f"Procesadas {i+1}/{len(df)} filas...")
-
-    logging.info("Analysis completed.")
+    logging.info(f"Analysis completed with {len(result)} intervals.")
     return result
