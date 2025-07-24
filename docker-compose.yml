@@ -22,7 +22,6 @@ services:
       - ./api-gateway/.env
     depends_on:
       - sync-processor
-      - async-processor
     networks:
       - app-network
 
