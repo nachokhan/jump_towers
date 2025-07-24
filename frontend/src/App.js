@@ -13,7 +13,7 @@ function App() {
     setFile(event.target.files[0]);
   };
 
-  const onFileUpload = () => {
+  const onProcessData = () => {
     const formData = new FormData();
     formData.append('file', file);
 
@@ -23,7 +23,7 @@ function App() {
         setCurrentPage(1); // reset page
       })
       .catch(error => {
-        console.error("Upload error", error);
+        console.error("Process error", error);
       });
   };
 
@@ -62,7 +62,7 @@ function App() {
       <h2>CSV Processor</h2>
 
       <input type="file" onChange={onFileChange} />
-      <button onClick={onFileUpload}>Upload</button>
+      <button onClick={onProcessData}>Process</button>
 
       <br />
 
