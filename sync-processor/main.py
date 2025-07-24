@@ -126,7 +126,7 @@ def analyze_movements(df: pd.DataFrame) -> list:
             "end_time": window_end.isoformat(),
             "State": most_common_state,
             "tower_jump": "yes" if jump else "no",
-            "confidence": confidence
+            "confidence": f"{confidence:%}"
         })
 
     logging.info(f"Analysis completed with {len(result)} intervals.")
