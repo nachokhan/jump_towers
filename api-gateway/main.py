@@ -21,7 +21,7 @@ SYNC_PROCESSOR_URL = os.getenv("SYNC_PROCESSOR_URL")
 ASYNC_PROCESSOR_URL = os.getenv("ASYNC_PROCESSOR_URL")
 
 
-@app.post("/upload")
+@app.post("/process")
 async def upload_file(file: UploadFile = File(...)):
     if not file.filename.endswith('.csv'):
         raise HTTPException(status_code=400, detail="Invalid file type. Only CSV files are allowed.")
