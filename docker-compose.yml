@@ -38,18 +38,6 @@ services:
     networks:
       - app-network
 
-  async-processor:
-    build: ./async-processor
-    ports:
-      - "8002:8002"
-    volumes:
-      - ./async-processor:/app
-      - ./.volumes/async-processor:/app/data
-    env_file:
-      - ./async-processor/.env
-    networks:
-      - app-network
-
 networks:
   app-network:
     driver: bridge
