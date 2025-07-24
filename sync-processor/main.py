@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from collections import Counter
 import logging
 import sys
+import jumps
 
 app = FastAPI()
 
@@ -99,6 +100,7 @@ def analyze_movements(df: pd.DataFrame) -> list:
     for idx, row in df.iterrows():
         i += 1
         t = row["timestamp"]
+        current_state = row["State"]
         window_start = t - window_size
         window_end = t + window_size
         window_df = df[(df["timestamp"] >= window_start) & (df["timestamp"] <= window_end)]
@@ -115,9 +117,11 @@ def analyze_movements(df: pd.DataFrame) -> list:
 
         logging.debug(f"Most common state: {most_common_state} with confidence {confidence}")
 
-        # Detectar Tower Jump
+        # Detect Tower Jump
         prev = df[df["timestamp"] < t].tail(1)
         next_ = df[df["timestamp"] > t].head(1)
+        jump = jumps.detect_jump_without_current(df, t, jump_threshold)
+
         if i % 500 == 0:
             logging.info(f"Procesadas {i+1}/{len(df)} filas...({idx})")
 
