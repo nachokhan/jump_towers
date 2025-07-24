@@ -30,7 +30,9 @@ ASYNC_PROCESSOR_URL = os.getenv("ASYNC_PROCESSOR_URL")
 
 
 @app.post("/process")
-async def upload_file(file: UploadFile = File(...)):
+async def process_file(file: UploadFile = File(...)):
+
+    logging.info(f"Recieving file: {file.filename}")
     if not file.filename.endswith('.csv'):
         raise HTTPException(status_code=400, detail="Invalid file type. Only CSV files are allowed.")
 
