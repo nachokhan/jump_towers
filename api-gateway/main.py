@@ -40,7 +40,11 @@ async def process_file(file: UploadFile = File(...)):
         form = aiohttp.FormData()
         form.add_field('file', await file.read(), filename=file.filename, content_type=file.content_type)
 
-        async with session.post(f"{SYNC_PROCESSOR_URL}/process", data=form) as sync_response:
+        async with session.post(
+            f"{SYNC_PROCESSOR_URL}/process",
+            data=form,
+            timeout=aiohttp.ClientTimeout(total=60*10)
+        ) as sync_response:
             if sync_response.status != 200:
                 raise HTTPException(status_code=sync_response.status, detail="Error from sync processor")
             sync_data = await sync_response.json()
