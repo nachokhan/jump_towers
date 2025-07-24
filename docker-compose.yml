@@ -21,19 +21,19 @@ services:
     env_file:
       - ./api-gateway/.env
     depends_on:
-      - sync-processor
+      - processor
     networks:
       - app-network
 
-  sync-processor:
-    build: ./sync-processor
+  processor:
+    build: ./processor
     ports:
       - "8001:8001"
     volumes:
-      - ./sync-processor:/app
-      - ./.volumes/sync-processor:/app/data
+      - ./processor:/app
+      - ./.volumes/processor:/app/data
     env_file:
-      - ./sync-processor/.env
+      - ./processor/.env
     networks:
       - app-network
 

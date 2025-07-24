@@ -18,10 +18,10 @@ To run this project, you will need to have Docker and Docker Compose installed.
     Create a `.env` file in the `api-gateway` directory with the following content:
 
     ```bash
-    SYNC_PROCESSOR_URL=http://sync-processor:8001
+    PROCESSOR_URL=http://processor:8001
     ```
 
-    Create an empty `.env` file in the `sync-processor` directory.
+    Create an empty `.env` file in the `processor` directory.
 
 3.  **Build and run the services:**
 
