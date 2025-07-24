@@ -33,3 +33,8 @@ To run this project, you will need to have Docker and Docker Compose installed.
 
     Once the services are running, you can access the frontend at `http://localhost:3000`.
 
+## Future Work
+
+- Implement websockets to show the progress of the analysis.
+- Enhance the analysis method to make it faster, if possible.
+- Add time-window, threshold and method to the UI options.
