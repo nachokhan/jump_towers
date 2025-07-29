@@ -25,9 +25,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-SYNC_PROCESSOR_URL = os.getenv("SYNC_PROCESSOR_URL")
-ASYNC_PROCESSOR_URL = os.getenv("ASYNC_PROCESSOR_URL")
-
+PROCESSOR_URL = os.getenv("PROCESSOR_URL")
 
 @app.post("/process")
 async def process_file(file: UploadFile = File(...)):
@@ -41,7 +39,7 @@ async def process_file(file: UploadFile = File(...)):
         form.add_field('file', await file.read(), filename=file.filename, content_type=file.content_type)
 
         async with session.post(
-            f"{SYNC_PROCESSOR_URL}/process",
+            f"{PROCESSOR_URL}/process",
             data=form,
             timeout=aiohttp.ClientTimeout(total=60*10)
         ) as sync_response:
